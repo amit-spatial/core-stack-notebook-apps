@@ -1,1 +1,0 @@
-"""Some fixtures for tests."""
