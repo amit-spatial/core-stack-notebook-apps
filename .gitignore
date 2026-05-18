@@ -5,3 +5,15 @@
 
 .history
 
+__pycache__/
+*.py[cod]
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+.marimo/
+
+data/
+outputs/
+dist/
+site/
+

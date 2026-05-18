@@ -1,0 +1,45 @@
+[project]
+name = "core-stack-notebook-apps"
+version = "0.1.0"
+description = "marimo-native notebooks and web apps for exploring CoRE Stack public geospatial data."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "altair>=5.5.0",
+    "folium>=0.19.0",
+    "httpx>=0.28.1",
+    "marimo[recommended]>=0.23.6",
+    "orjson>=3.10.18",
+    "polars>=1.30.0",
+    "pyarrow>=20.0.0",
+]
+
+[project.optional-dependencies]
+geo = [
+    "geopandas>=1.0.1",
+    "lonboard>=0.10.3",
+    "mapclassify>=2.8.1",
+    "pyproj>=3.7.1",
+    "shapely>=2.0.7",
+]
+dev = [
+    "pytest>=8.3.5",
+    "ruff>=0.11.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/corestack_notebook_apps"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+"notebooks/*.py" = ["B018"]

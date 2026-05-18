@@ -1,0 +1,144 @@
+site_name: marimo mkdocs
+site_url: https://marimo-team.github.io/mkdocs-marimo
+site_author: marimo team
+site_description: The next generation of Python notebooks
+edit_uri: edit/main/docs/
+
+repo_name: mkdocs-marimo
+repo_url: https://github.com/marimo-team/mkdocs-marimo
+
+docs_dir: docs/
+copyright: '© marimo 2024'
+
+theme:
+  name: material
+  font:
+    text: PT Sans
+    code: Fira Mono
+  logo: assets/android-chrome-192x192.png
+  favicon: assets/favicon.ico
+  features:
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.tracking
+    - navigation.path
+    - navigation.footer
+    - navigation.top
+    - navigation.indexes
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - content.code.copy
+    - content.code.annotate
+    - toc.integrate
+    - toc.follow
+    - search.highlight
+    - search.share
+    - search.suggest
+    - announce.dismiss
+  palette:
+    - media: '(prefers-color-scheme)'
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    - media: '(prefers-color-scheme: light)'
+      scheme: default
+      primary: teal
+      accent: pink
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: '(prefers-color-scheme: dark)'
+      scheme: slate
+      primary: deep-purple
+      accent: pink
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+
+nav:
+  - Overview: index.md
+  - Getting Started:
+      - Installation: getting-started/installation.md
+      - Quick Start: getting-started/quick-start.md
+      - Configuration: getting-started/configuration.md
+      - Embedding the marimo playground: getting-started/blocks.md
+      - Inline Notebook: getting-started/inline-notebook.md
+      - Notebooks in Navigation: getting-started/nav_notebook.py
+
+extra:
+  generator: false
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/marimo-team/marimo
+    - icon: fontawesome/brands/discord
+      link: https://marimo.io/discord?ref=docs
+    - icon: material/email-newsletter
+      link: https://marimo.io/newsletter
+    - icon: material/forum
+      link: https://community.marimo.io
+    - icon: fontawesome/brands/mastodon
+      link: https://mastodon.social/@marimo_io
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/marimo_io
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/company/marimo-io
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/marimo/
+
+plugins:
+  - search
+  - tags
+  - marimo: {}
+
+watch:
+  - mkdocs_marimo
+
+# hooks:
+#   - mkdocs_marimo/plugin.py
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - meta
+  - sane_lists
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - class: mermaid
+          name: mermaid
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+validation:
+  nav:
+    omitted_files: warn
+    not_found: warn
+    absolute_links: warn
+  links:
+    not_found: warn
+    anchors: warn
+    absolute_links: warn
+    unrecognized_links: warn
