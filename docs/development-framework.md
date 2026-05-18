@@ -48,6 +48,40 @@ The same backend data can power all of these modes. marimo's reactivity makes th
 transition from one mode to another cheap: controls change, derived cells recompute, and
 maps/charts update without rebuilding the app.
 
+## Current Implementation Status
+
+The modes are not all equally implemented yet. Current status:
+
+- `01_public_data_browser.py`: discovery mode. It proves API access and basic map/table rendering.
+- `02_exploratory_layer_studio.py`: exploratory mode. It filters layer inventories and creates manifests.
+- `03_mws_deep_dive.py`: first-pass deep-dive mode. It is useful, but still needs richer interpretation.
+- `04_action_planner.py`: planner mode. It scans MWS KYL indicators, ranks candidates with adjustable weights, maps the top candidates, and creates a field-check brief.
+- `05_guided_map_tour.py`: guided and dashboard mode. It walks users through map reading, layer availability, MWS time series, indicator interpretation, and panel selection.
+
+Important next upgrades:
+
+- revive MWS upstream/downstream reasoning from `.archive/legacy-2026-05-17/core_stack_mws_intersections.py`
+- revive protected-area and tree-cover change workflows from `Protected_Areas_Analysis.ipynb`
+- revive water-flow and connectivity ideas from `MWS_Connectivity_Graph.ipynb`
+- turn methodology notes such as `cropping_intensity_doc.md` into interactive explanatory cells
+- add real CLART/site suitability layer interpretation when the needed API/layer surfaces are exposed cleanly to browser apps
+- add admin-style widgets for layer status, generation progress, API health, and project/location readiness
+
+The new planner and guided-tour notebooks are a stronger starting point, but they are not
+the end state. The end state should feel closer to Landscape Explorer, Commons Connect,
+and the admin dashboard, while keeping marimo's reproducible notebook structure.
+
+## External Product References
+
+Design direction should continue to draw from:
+
+- CoRE Stack methodologies: high-resolution LULC, tree cover monitoring, vulnerability indices, impact assessment, site assessment, fairness in MGNREGA allocation, plantation suitability, and restoration support.
+- Restoration work: prospective restoration site identification, continuous ecological monitoring, and field-facing restoration toolkits.
+- Nuts-and-bolts posts: micro-watershed registry, starter-kit examples, water-flow reasoning, protected-area tracking, and data structure explanations.
+- Landscape Explorer: KYL profile panels, charts, map filters, layer toggles, and report generation.
+- Commons Connect: guided planning, layer-specific info boxes, CLART/terrain/stream-order legends, KML upload flow, and plan filtering.
+- Admin dashboard: API key generation, layer generation/status workflows, organization/project/location management, and operational widgets.
+
 ## Inference Patterns
 
 Notebooks should combine multiple API outputs into higher-value signals. Useful patterns:
@@ -166,14 +200,14 @@ Every deployable notebook should:
    - before/after layer comparisons
    - local interpretation and recommended next questions
 
-4. `05_action_planner.py`
+4. `04_action_planner.py`
    - combine MWS, village, layer inventory, and KYL indicators
    - expose sliders for priority scoring weights
    - rank candidate micro-watersheds
    - show recommended field checks and possible intervention families
    - export a planning brief
 
-5. `06_guided_map_tour.py`
+5. `05_guided_map_tour.py`
    - teach users how to read CoRE Stack maps step by step
    - highlight one layer at a time
    - use tooltips, callouts, and map bookmarks
@@ -194,6 +228,8 @@ site/
   public-data-browser/
   exploratory-layer-studio/
   mws-deep-dive/
+  action-planner/
+  guided-map-tour/
   place-stories/
 ```
 

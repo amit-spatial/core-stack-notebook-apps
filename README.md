@@ -25,7 +25,9 @@ marimo notebooks are Python files, reactive apps, and executable scripts at the 
 ├── notebooks/
 │   ├── 01_public_data_browser.py
 │   ├── 02_exploratory_layer_studio.py
-│   └── 03_mws_deep_dive.py
+│   ├── 03_mws_deep_dive.py
+│   ├── 04_action_planner.py
+│   └── 05_guided_map_tour.py
 ├── scripts/
 │   └── build_pages.py
 ├── src/corestack_notebook_apps/
@@ -60,6 +62,8 @@ For validation:
 uv run marimo check notebooks/01_public_data_browser.py
 uv run marimo check notebooks/02_exploratory_layer_studio.py
 uv run marimo check notebooks/03_mws_deep_dive.py
+uv run marimo check notebooks/04_action_planner.py
+uv run marimo check notebooks/05_guided_map_tour.py
 uv run notebooks/01_public_data_browser.py
 ```
 
@@ -91,6 +95,13 @@ datasets, inspecting public URLs, previewing geography, and copying a reusable m
 `notebooks/03_mws_deep_dive.py` turns one micro-watershed into a compact analytical
 brief with water balance signals, vegetation time series, KYL indicators, map context,
 and a report link.
+
+`notebooks/04_action_planner.py` scans candidate micro-watersheds, lets users adjust
+planning weights, ranks the candidates, maps the top set, and creates a field-check brief.
+
+`notebooks/05_guided_map_tour.py` teaches users how to move from map orientation to
+evidence layers, time-series reading, indicator interpretation, and a self-arranged
+dashboard.
 
 This is intentionally the narrow waist of the repo. Future notebooks should reuse common
 request and GeoJSON logic where possible, while staying WebAssembly-safe for static export.

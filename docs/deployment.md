@@ -14,6 +14,38 @@ It:
 4. exports each notebook with `marimo export html-wasm`
 5. uploads the generated `site/` directory as the GitHub Pages artifact
 
+## One-Go Redeploy
+
+For a local rebuild and preview:
+
+```bash
+uv sync
+uv run python scripts/build_pages.py
+uv run python -m http.server --directory site 8010
+```
+
+If port `8010` is already busy, use the next available port:
+
+```bash
+uv run python -m http.server --directory site 8011
+```
+
+For GitHub Pages:
+
+```bash
+uv sync --frozen --extra dev
+uv run ruff check src notebooks scripts
+uv run python scripts/build_pages.py
+git status --short
+git add .github/workflows/pages.yml README.md docs notebooks scripts pyproject.toml uv.lock
+git commit -m "Update marimo notebook suite"
+git push origin main
+```
+
+The push triggers the `Deploy GitHub Pages` workflow automatically when Pages is set to
+GitHub Actions. Use the manual workflow button only for the first deployment or when you
+want to rerun a deploy without a new commit.
+
 ## Repository Settings
 
 In GitHub, set Pages to use **GitHub Actions** as the source:
@@ -61,6 +93,19 @@ The root `site/index.html` links to:
 - `/public-data-browser/`
 - `/exploratory-layer-studio/`
 - `/mws-deep-dive/`
+- `/action-planner/`
+- `/guided-map-tour/`
+
+## Adding A New Notebook
+
+1. Create a `.py` marimo notebook in `notebooks/`.
+2. Keep it browser-safe for WebAssembly export: no private secrets, no local-only paths, no server-only imports.
+3. Add the notebook to `APPS` in `scripts/build_pages.py`.
+4. Run `uv run python scripts/build_pages.py`.
+5. Preview at `http://127.0.0.1:8010/`.
+6. Commit and push to `main`.
+
+The generated `site/` directory is ignored and should not be committed.
 
 ## Template Reference
 
@@ -77,3 +122,11 @@ It demonstrates:
 This project currently keeps all deployable experiences as run-mode apps, so
 `scripts/build_pages.py` is intentionally simpler. The template can still guide a future
 split between public apps, editable notebooks, reusable templates, and static assets.
+
+## Notes
+
+- GitHub Pages is static; API keys must be entered at runtime or loaded locally from `.env`.
+- The deployed app still needs backend CORS for API calls from `https://amit-spatial.github.io`.
+- The local server does not solve production CORS; it only previews the static export.
+- If a notebook uses new packages, add them to both `pyproject.toml` and the notebook PEP 723 block.
+- If the API shape changes, update notebook helper functions before redeploying.

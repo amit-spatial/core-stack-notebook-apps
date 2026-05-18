@@ -37,6 +37,18 @@ APPS = (
         title="MWS Deep Dive",
         description="Turn one micro-watershed into a compact analytical brief.",
     ),
+    MarimoApp(
+        notebook="notebooks/04_action_planner.py",
+        slug="action-planner",
+        title="Action Planner",
+        description="Rank candidate micro-watersheds with transparent planning weights.",
+    ),
+    MarimoApp(
+        notebook="notebooks/05_guided_map_tour.py",
+        slug="guided-map-tour",
+        title="Guided Map Tour",
+        description="Walk from map orientation to evidence reading and a custom dashboard.",
+    ),
 )
 
 
