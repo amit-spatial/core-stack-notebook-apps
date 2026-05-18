@@ -1,9 +1,13 @@
 .venv/
-
 .env
 
+.history/
+.archive/
 
-.history
+data/
+outputs/
+dist/
+site/
 
 __pycache__/
 *.py[cod]
@@ -11,9 +15,3 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 .marimo/
-
-data/
-outputs/
-dist/
-site/
-

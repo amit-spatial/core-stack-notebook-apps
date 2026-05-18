@@ -78,6 +78,44 @@ The backend also needs to allow the `X-API-Key` request header for public API ro
 
 For the current Django backend, this means setting `CORS_ALLOWED_ORIGINS` in production to include the Pages origin. `X-API-Key` is already present in `CORS_ALLOW_HEADERS` in `nrm_app/settings.py`.
 
+
+### How to apply
+
+Add the above block to your settings.py (replace the existing else: branch for CORS_ALLOWED_ORIGINS).
+
+- Redeploy your Django backend.
+- Test from your GitHub Pages app:
+- Open DevTools → Network tab.
+- Make a request to your API.
+- Verify the response headers include:
+- Access-Control-Allow-Origin: https://amit-spatial.github.io
+- Access-Control-Allow-Headers: X-API-Key
+
+### MARK: CORS Settings
+
+```python
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    CORS_ALLOWED_ORIGINS = [
+        "https://amit-spatial.github.io",   # GitHub Pages origin
+        # Add your custom domain once chosen, e.g.:
+        # "https://docs.core-stack.org",
+    ]
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^http://localhost:\d+$",
+    r"^http://127\.0\.0\.1:\d+$",
+    r"^http://192\.168\.\d{1,3}\.\d{1,3}(:\d+)?$",
+]
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "ngrok-skip-browser-warning",
+    "content-disposition",
+    "X-API-Key",
+]
+```
+
 ## Local Export
 
 ```bash
