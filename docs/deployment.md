@@ -1,6 +1,6 @@
 # GitHub Pages Deployment
 
-This repo deploys the marimo app as a WebAssembly HTML export.
+This repo deploys the marimo notebook suite as WebAssembly HTML exports.
 
 ## Workflow
 
@@ -9,9 +9,9 @@ The GitHub Actions workflow at `.github/workflows/pages.yml` runs on pushes to `
 It:
 
 1. installs dependencies with `uv`
-2. validates the notebook with `marimo check`
-3. lints `src/` and `notebooks/`
-4. exports `notebooks/01_public_data_browser.py` with `marimo export html-wasm`
+2. lints `src/`, `notebooks/`, and `scripts/`
+3. validates each notebook with `marimo check`
+4. exports each notebook with `marimo export html-wasm`
 5. uploads the generated `site/` directory as the GitHub Pages artifact
 
 ## Repository Settings
@@ -49,10 +49,15 @@ For the current Django backend, this means setting `CORS_ALLOWED_ORIGINS` in pro
 ## Local Export
 
 ```bash
-rm -rf site
-uv run marimo export html-wasm notebooks/01_public_data_browser.py \
-  --output site \
-  --mode run \
-  --no-show-code
-python -m http.server --directory site 8000
+uv run python scripts/build_pages.py
+uv run python -m http.server --directory site 8010
 ```
+
+Use port `8010` by default for local previews. If it is already in use, choose the next
+free port and keep the `site/` directory the same.
+
+The root `site/index.html` links to:
+
+- `/public-data-browser/`
+- `/exploratory-layer-studio/`
+- `/mws-deep-dive/`

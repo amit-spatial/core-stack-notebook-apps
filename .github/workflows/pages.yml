@@ -32,20 +32,11 @@ jobs:
       - name: Install dependencies
         run: uv sync --frozen --extra dev
 
-      - name: Validate notebook
-        run: uv run marimo check notebooks/01_public_data_browser.py
-
       - name: Lint source
-        run: uv run ruff check src notebooks
+        run: uv run ruff check src notebooks scripts
 
-      - name: Export marimo app
-        run: |
-          rm -rf site
-          uv run marimo export html-wasm notebooks/01_public_data_browser.py \
-            --output site \
-            --mode run \
-            --no-show-code
-          touch site/.nojekyll
+      - name: Export marimo apps
+        run: uv run python scripts/build_pages.py
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

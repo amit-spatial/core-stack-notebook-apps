@@ -23,7 +23,11 @@ marimo notebooks are Python files, reactive apps, and executable scripts at the 
 ```text
 .
 ├── notebooks/
-│   └── 01_public_data_browser.py
+│   ├── 01_public_data_browser.py
+│   ├── 02_exploratory_layer_studio.py
+│   └── 03_mws_deep_dive.py
+├── scripts/
+│   └── build_pages.py
 ├── src/corestack_notebook_apps/
 │   ├── config.py
 │   ├── geo.py
@@ -54,6 +58,8 @@ For validation:
 
 ```bash
 uv run marimo check notebooks/01_public_data_browser.py
+uv run marimo check notebooks/02_exploratory_layer_studio.py
+uv run marimo check notebooks/03_mws_deep_dive.py
 uv run notebooks/01_public_data_browser.py
 ```
 
@@ -69,7 +75,7 @@ PUBLIC_API_X_API_KEY=...
 
 The current local `.env` also has the legacy key name `corestsack-api-key`, which is supported for compatibility.
 
-## First App
+## Notebook Apps
 
 `notebooks/01_public_data_browser.py` is the seed app. It lets a user:
 
@@ -79,11 +85,19 @@ The current local `.env` also has the legacy key name `corestsack-api-key`, whic
 - preview those geometries on a lightweight map
 - select one MWS and fetch its time series plus KYL indicator row
 
-This is intentionally the narrow waist of the repo. Future notebooks should reuse `src/corestack_notebook_apps/` instead of copying request or GeoJSON logic.
+`notebooks/02_exploratory_layer_studio.py` is a layer catalog workbench for filtering
+datasets, inspecting public URLs, previewing geography, and copying a reusable manifest.
+
+`notebooks/03_mws_deep_dive.py` turns one micro-watershed into a compact analytical
+brief with water balance signals, vegetation time series, KYL indicators, map context,
+and a report link.
+
+This is intentionally the narrow waist of the repo. Future notebooks should reuse common
+request and GeoJSON logic where possible, while staying WebAssembly-safe for static export.
 
 ## Deploy To GitHub Pages
 
-The repo is configured to deploy the first app as a marimo WebAssembly export through GitHub Actions.
+The repo is configured to deploy the notebook suite as marimo WebAssembly exports through GitHub Actions.
 
 In GitHub, set Pages to use GitHub Actions:
 
@@ -92,6 +106,13 @@ In GitHub, set Pages to use GitHub Actions:
 Then push to `dev` or `main`, or run the `Deploy GitHub Pages` workflow manually.
 
 GitHub Pages is static, so the public app does not include a private API key. Users paste their CoRE Stack API key into the app at runtime.
+
+For a local static preview:
+
+```bash
+uv run python scripts/build_pages.py
+uv run python -m http.server --directory site 8010
+```
 
 See [docs/deployment.md](docs/deployment.md) for the workflow details.
 

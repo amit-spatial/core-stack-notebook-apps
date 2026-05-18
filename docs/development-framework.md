@@ -79,4 +79,3 @@ site/
 - TorchGeo for geospatial machine learning workflows
 - EVoC for ecological/evolutionary computation experiments
 - Tessera for large geospatial representation/model workflows as the stack matures
-
