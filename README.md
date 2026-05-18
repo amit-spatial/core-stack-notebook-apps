@@ -89,7 +89,7 @@ In GitHub, set Pages to use GitHub Actions:
 
 `Settings -> Pages -> Build and deployment -> Source -> GitHub Actions`
 
-Then push to `main`, or run the `Deploy GitHub Pages` workflow manually.
+Then push to `dev` or `main`, or run the `Deploy GitHub Pages` workflow manually.
 
 GitHub Pages is static, so the public app does not include a private API key. Users paste their CoRE Stack API key into the app at runtime.
 

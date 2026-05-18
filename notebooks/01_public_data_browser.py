@@ -103,6 +103,9 @@ def _():
             except httpx.HTTPError as exc:
                 message = f"Could not reach {url}: {exc}"
                 raise CoreStackPublicAPIError(message) from exc
+            except Exception as exc:
+                message = f"Unexpected browser/API error while requesting {url}: {exc!r}"
+                raise CoreStackPublicAPIError(message) from exc
 
             return response.json()
 
@@ -248,6 +251,24 @@ def _():
                 values.append(str(value))
         return values
 
+    def describe_api_exception(exc: Exception) -> str:
+        detail = str(exc).strip() or repr(exc)
+        cors_clues = (
+            "Could not reach",
+            "Failed to fetch",
+            "NetworkError",
+            "Load failed",
+            "TypeError",
+        )
+        if any(clue in detail for clue in cors_clues):
+            return (
+                f"{detail}\n\n"
+                "If this happens on GitHub Pages after entering a valid key, the likely cause "
+                "is browser CORS. The CoRE Stack API must allow the deployed origin "
+                "`https://amit-spatial.github.io` and the `X-API-Key` request header."
+            )
+        return detail
+
     try:
         repo_root = Path(__file__).resolve().parents[1]
     except NameError:
@@ -258,6 +279,7 @@ def _():
         CoreStackPublicClient,
         CoreStackSettings,
         alt,
+        describe_api_exception,
         feature_count,
         folium,
         geojson_center,
@@ -276,12 +298,26 @@ def _(CoreStackSettings, repo_root):
 
 @app.cell
 def _(mo):
-    mo.md(r"""
-    # CoRE Stack Public Data Browser
+    mo.vstack(
+        [
+            mo.md(r"""
+            # CoRE Stack Public Data Browser
 
-    Explore active CoRE Stack geographies, inspect published layers, and drill into
-    micro-watershed analytics using the current public API surface.
-    """)
+            Explore active CoRE Stack geographies, inspect published layers, and drill into
+            micro-watershed analytics using the current public API surface.
+            """),
+            mo.callout(
+                """
+                This notebook becomes a live geospatial workbench after an API key is entered:
+                active locations, layer catalogs, MWS and village geometries, watershed time series,
+                KYL indicators, maps, charts, and export-ready tables.
+
+                Need a key? Open the [CoRE Stack dashboard](https://dashboard.core-stack.org/).
+                """,
+                kind="info",
+            ),
+        ]
+    )
     return
 
 
@@ -304,28 +340,48 @@ def _(mo, settings):
 
 
 @app.cell
-def _(CoreStackPublicClient, api_key_override, base_url_input, mo, settings):
+def _(CoreStackPublicClient, api_key_override, base_url_input, settings):
     api_key = api_key_override.value.strip() or settings.public_api_key
-    mo.stop(
-        not api_key,
-        mo.md("Paste a CoRE Stack API key above to start. Local runs can also use `.env`."),
-    )
-    client = CoreStackPublicClient(
-        api_key=api_key,
-        base_url=base_url_input.value.strip(),
+    client = (
+        CoreStackPublicClient(
+            api_key=api_key,
+            base_url=base_url_input.value.strip(),
+        )
+        if api_key
+        else None
     )
     return (client,)
 
 
 @app.cell
-def _(client):
-    active_locations = client.active_locations()
+def _(CoreStackPublicAPIError, client, describe_api_exception, mo):
+    mo.stop(
+        client is None,
+        mo.callout(
+            "Paste a CoRE Stack API key above to activate the live API-backed controls.",
+            kind="neutral",
+        ),
+    )
+    try:
+        active_locations = client.active_locations()
+    except CoreStackPublicAPIError as exc:
+        mo.stop(
+            True,
+            mo.callout(
+                f"Could not load active locations.\n\n{describe_api_exception(exc)}",
+                kind="danger",
+            ),
+        )
     state_names = [state["label"] for state in active_locations]
     return active_locations, state_names
 
 
 @app.cell
 def _(mo, state_names):
+    mo.stop(
+        not state_names,
+        mo.callout("No active locations were returned by the API.", kind="warn"),
+    )
     state_selector = mo.ui.dropdown(
         options=state_names,
         value=state_names[0],
@@ -392,15 +448,32 @@ def _(load_location, mo):
 
 
 @app.cell
-def _(client, district_selector, state_selector, tehsil_selector):
+def _(
+    CoreStackPublicAPIError,
+    client,
+    describe_api_exception,
+    district_selector,
+    mo,
+    state_selector,
+    tehsil_selector,
+):
     selected_scope = {
         "state": state_selector.value,
         "district": district_selector.value,
         "tehsil": tehsil_selector.value,
     }
-    generated_layers = client.generated_layer_urls(**selected_scope)
-    mws_geojson = client.mws_geometries(**selected_scope)
-    village_geojson = client.village_geometries(**selected_scope)
+    try:
+        generated_layers = client.generated_layer_urls(**selected_scope)
+        mws_geojson = client.mws_geometries(**selected_scope)
+        village_geojson = client.village_geometries(**selected_scope)
+    except CoreStackPublicAPIError as exc:
+        mo.stop(
+            True,
+            mo.callout(
+                f"Could not load data for the selected location.\n\n{describe_api_exception(exc)}",
+                kind="danger",
+            ),
+        )
     return generated_layers, mws_geojson, selected_scope, village_geojson
 
 
@@ -510,10 +583,20 @@ def _(mo, mws_geojson, property_values):
 
 
 @app.cell
-def _(client, mws_selector, selected_scope):
+def _(CoreStackPublicAPIError, client, describe_api_exception, mo, mws_selector, selected_scope):
     selected_mws_id = mws_selector.value
-    mws_timeseries_payload = client.mws_data(**selected_scope, mws_id=selected_mws_id)
-    mws_kyl_payload = client.mws_kyl_indicators(**selected_scope, mws_id=selected_mws_id)
+    try:
+        mws_timeseries_payload = client.mws_data(**selected_scope, mws_id=selected_mws_id)
+        mws_kyl_payload = client.mws_kyl_indicators(**selected_scope, mws_id=selected_mws_id)
+    except CoreStackPublicAPIError as exc:
+        mo.stop(
+            True,
+            mo.callout(
+                f"Could not load MWS analytics for `{selected_mws_id}`.\n\n"
+                f"{describe_api_exception(exc)}",
+                kind="danger",
+            ),
+        )
     return mws_kyl_payload, mws_timeseries_payload, selected_mws_id
 
 

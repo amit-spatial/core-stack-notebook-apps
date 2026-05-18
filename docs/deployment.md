@@ -4,7 +4,7 @@ This repo deploys the marimo app as a WebAssembly HTML export.
 
 ## Workflow
 
-The GitHub Actions workflow at `.github/workflows/pages.yml` runs on pushes to `main` and on manual dispatch.
+The GitHub Actions workflow at `.github/workflows/pages.yml` runs on pushes to `dev` or `main`, and on manual dispatch.
 
 It:
 
@@ -19,6 +19,12 @@ It:
 In GitHub, set Pages to use **GitHub Actions** as the source:
 
 `Settings -> Pages -> Build and deployment -> Source -> GitHub Actions`
+
+The first deployment may need to be kicked manually:
+
+`Actions -> All workflows -> Deploy GitHub Pages -> Run workflow`
+
+After this, pushes to `dev` or `main` redeploy automatically.
 
 ## Credentials
 
@@ -37,6 +43,8 @@ Fix this by allowing the deployed Pages origin, for example:
 - the final custom docs/webapps origin, once chosen
 
 The backend also needs to allow the `X-API-Key` request header for public API routes.
+
+For the current Django backend, this means setting `CORS_ALLOWED_ORIGINS` in production to include the Pages origin. `X-API-Key` is already present in `CORS_ALLOW_HEADERS` in `nrm_app/settings.py`.
 
 ## Local Export
 
