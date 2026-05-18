@@ -16,15 +16,29 @@ This file captures practical setup lessons from the first CoRE Stack marimo depl
 ## GitHub Pages Pattern
 
 ```bash
-uv run marimo check notebooks/01_public_data_browser.py
-uv run marimo export html-wasm notebooks/01_public_data_browser.py \
-  --output site \
-  --mode run \
-  --no-show-code
-python -m http.server --directory site 8000
+uv run python scripts/build_pages.py
+uv run python -m http.server --directory site 8010
 ```
 
 The exported app must be served over HTTP. Opening `site/index.html` through `file://` is not enough.
+
+## Template Reference
+
+Keep https://github.com/amit-spatial/marimo-gh-pages-template as a known-good reference
+for marimo WebAssembly deployments on GitHub Pages.
+
+Useful ideas from the template:
+
+- separate `apps/` and `notebooks/` directories
+- export `apps/` with `--mode run --no-show-code`
+- export exploratory notebooks with `--mode edit` when users should see/edit code
+- generate a root index from templates instead of hand-editing links
+- keep static assets next to notebooks in a `public/` directory and load them with `mo.notebook_location()`
+- use `_site/` or `site/` as a generated artifact only, never as source
+
+For this repo, all current files are app-style experiences, so exporting them in run mode
+is correct. The template helps with deployment structure and generated indexes, but it does
+not solve API CORS; CORS still must be fixed on the CoRE Stack backend.
 
 ## WASM Pattern
 
@@ -70,4 +84,4 @@ For this project, always link to https://dashboard.core-stack.org/ when asking f
 - marimo examples: https://github.com/marimo-team/marimo/tree/main/examples
 - awesome-marimo libraries: https://github.com/marimo-team/awesome-marimo
 - marimo AI skills: https://docs.marimo.io/guides/generate_with_ai/skills/
-
+- marimo GitHub Pages template: https://github.com/amit-spatial/marimo-gh-pages-template

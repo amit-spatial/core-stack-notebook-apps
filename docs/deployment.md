@@ -61,3 +61,19 @@ The root `site/index.html` links to:
 - `/public-data-browser/`
 - `/exploratory-layer-studio/`
 - `/mws-deep-dive/`
+
+## Template Reference
+
+The repo https://github.com/amit-spatial/marimo-gh-pages-template is a useful reference
+when this deployment needs to become more generic.
+
+It demonstrates:
+
+- exporting app files from `apps/` in run mode
+- exporting notebook files from `notebooks/` in edit mode
+- generating the root index through Jinja templates
+- keeping notebook-local assets in `public/`
+
+This project currently keeps all deployable experiences as run-mode apps, so
+`scripts/build_pages.py` is intentionally simpler. The template can still guide a future
+split between public apps, editable notebooks, reusable templates, and static assets.
